@@ -17,6 +17,7 @@ class Settings(BaseSettings):
     SQL_LOGS: bool = False
     CHECK_TOKEN_URL: str
     SERVICES: list[str]
+    USER_ID_FIELD: str
 
     ROOT_DIR: DirectoryPath = Path(__file__).resolve().parent.parent
 

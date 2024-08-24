@@ -1,6 +1,7 @@
 from pydantic import ValidationError
 
 from app.fastapi_app.constants import METRIC_MAPPING
+from app.fastapi_app.exeptions import JWTError
 from app.fastapi_app.schemas.api.v1.schemas import MetricsSchemaIn
 from app.fastapi_app.schemas.services.metric_schemas import (
     BaseMetricSchema,
@@ -22,16 +23,22 @@ class MetricService:
             try:
                 return schema(**data.get_dict())
             except ValidationError as error:
-                logger.error(f'Ошибка валидации метрики {data.metric_name}: {error}')
+                logger.error(f'Ошибка валидации метрики {data.metric_name}: {error}. ' f'Данные не сохранены: {data}.')
                 return None
-        logger.warning(f'Попытка сохранить неизвестный тип метрики: {data.metric_name}')
+        logger.warning(
+            f'Попытка сохранить неизвестный тип метрики: {data.metric_name}. ' f'Данные не сохранены: {data}.'
+        )
         return None
 
-    def save_metric(self, data: MetricsSchemaIn):
+    def save_metric(self, data: MetricsSchemaIn) -> None:
         if not self.auth_service.is_user_token_valid(data.user_token):
             logger.error(f'Пользователь с токеном {data.user_token} не найден. Данные не сохранены: {data.metric_data}')
             return
-        user_id = self.auth_service.get_user_id(data.user_token)
+        try:
+            user_id = self.auth_service.get_user_id(data.user_token)
+        except JWTError as error:
+            logger.error(f'Ошибка идентификации пользователя: {error}. Данные не сохранены: {data.metric_data}')
+            return
         if metric := self._get_prepared_metric(
             TransferMetricSchema(
                 user_id=user_id,

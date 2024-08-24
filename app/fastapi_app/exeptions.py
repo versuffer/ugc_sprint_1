@@ -12,3 +12,7 @@ class BaseError(Exception):
 
 class ExternalAuthServiceError(BaseError):
     pass
+
+
+class JWTError(BaseError):
+    pass
