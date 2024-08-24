@@ -1,9 +1,12 @@
+import datetime
+
 from pydantic import BaseModel
 
 
 class BaseMetricSchema(BaseModel):
     user_id: str
     metric_name: str
+    date: datetime.datetime
 
 
 class TransferMetricSchema(BaseMetricSchema):
