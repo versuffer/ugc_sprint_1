@@ -2,7 +2,11 @@
 name = "ugc-sprint-1"
 version = "1.0.0"
 description = ""
-authors = ["Носов Сергей Олегович <SONosov@datafort.ru>"]
+authors = [
+    "Носов Сергей <SONosov@datafort.ru>",
+    "Бубнова Яна <bujhvh@mail.ru>",
+    "Ротанин Дмитрий <SONosov@datafort.ru>",
+]
 readme = "README.md"
 
 
@@ -20,6 +24,7 @@ pydantic-settings = "^2.4.0"
 faststream = {extras = ["kafka"], version = "^0.5.18"}
 clickhouse-driver = "^0.2.9"
 uvicorn = "^0.30.6"
+requests = "^2.32.3"
 
 
 [tool.poetry.group.test.dependencies]

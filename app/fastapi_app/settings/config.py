@@ -16,6 +16,8 @@ class Settings(BaseSettings):
     DEBUG: bool
     LOG_LEVEL: Literal['DEBUG', 'INFO', 'WARNING', 'ERROR'] = 'INFO'
     SQL_LOGS: bool = False
+    CHECK_TOKEN_URL: str
+    SERVICES: list[str]
 
     ROOT_DIR: DirectoryPath = Path(__file__).resolve().parent.parent
 
