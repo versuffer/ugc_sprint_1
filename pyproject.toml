@@ -4,7 +4,6 @@ version = "1.0.0"
 description = ""
 authors = ["Носов Сергей Олегович <SONosov@datafort.ru>"]
 readme = "README.md"
-package-mode = false
 
 
 [build-system]
@@ -15,12 +14,12 @@ build-backend = "poetry.core.masonry.api"
 [tool.poetry.dependencies]
 python = "~3.11.9"
 fastapi = "^0.112.1"
-unicorn = "^2.0.1.post1"
 gunicorn = "^23.0.0"
 pydantic = "^2.8.2"
 pydantic-settings = "^2.4.0"
 faststream = {extras = ["kafka"], version = "^0.5.18"}
 clickhouse-driver = "^0.2.9"
+uvicorn = "^0.30.6"
 
 
 [tool.poetry.group.test.dependencies]
