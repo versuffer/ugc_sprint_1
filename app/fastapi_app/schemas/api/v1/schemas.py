@@ -6,4 +6,3 @@ class MetricsSchemaIn(BaseModel):
     user_token: str
     metric_name: str
     metric_data: dict
-

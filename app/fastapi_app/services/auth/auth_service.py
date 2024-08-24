@@ -1,8 +1,8 @@
+import requests
 from starlette import status
 
 from app.fastapi_app.exeptions import ExternalAuthServiceError
 from app.fastapi_app.settings.config import settings
-import requests
 
 
 class AuthService:
@@ -19,15 +19,14 @@ class AuthService:
 
     def is_user_token_valid(self, token) -> bool:
         """Проверка валидности токена пользователя во внешнем сервисе аутентификации."""
-        # try:
-        #     response = requests.post(
-        #         url=self.check_token_url,
-        #         json={'token': token},
-        #         timeout=5,
-        #     )
-        # except TimeoutError as error:
-        #     raise ExternalAuthServiceError(f'Ошибка проверки токена пользователя: {error}')
-        # if response.status_code == status.HTTP_200_OK:
-        #     return True
-        # return False
-        return True
+        try:
+            response = requests.post(
+                url=self.check_token_url,
+                json={'token': token},
+                timeout=5,
+            )
+        except TimeoutError as error:
+            raise ExternalAuthServiceError(f'Ошибка проверки токена пользователя: {error}')
+        if response.status_code == status.HTTP_200_OK:
+            return True
+        return False

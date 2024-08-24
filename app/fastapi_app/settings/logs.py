@@ -1,4 +1,5 @@
 """logger settings"""
+
 import logging
 from logging.config import dictConfig
 
@@ -33,7 +34,7 @@ logger_config = {
             'filename': 'log_file.log',
             'maxBytes': 500000,
             'backupCount': 10,
-        }
+        },
     },
     'loggers': {
         'root': {

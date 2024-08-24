@@ -1,5 +1,10 @@
-from app.fastapi_app.schemas.services.metric_schemas import ClickSchema, PageViewSchema, VideoQualitySchema, \
-    VideoViewToTheEndSchema, SearchFiltersSchema
+from app.fastapi_app.schemas.services.metric_schemas import (
+    ClickSchema,
+    PageViewSchema,
+    SearchFiltersSchema,
+    VideoQualitySchema,
+    VideoViewToTheEndSchema,
+)
 
 DEFAULT_ERROR_MESSAGE = 'Неизвестная ошибка.'
 

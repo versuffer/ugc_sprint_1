@@ -2,7 +2,6 @@ from pathlib import Path
 from pprint import pformat
 from typing import Literal
 
-
 from pydantic import DirectoryPath
 from pydantic_settings import BaseSettings
 
