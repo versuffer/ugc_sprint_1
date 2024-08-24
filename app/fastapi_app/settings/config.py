@@ -18,7 +18,8 @@ class Settings(BaseSettings):
     CHECK_TOKEN_URL: str
     SERVICES: list[str]
     USER_ID_FIELD: str
-
+    KAFKA_HOST: str
+    KAFKA_PORT: str
     ROOT_DIR: DirectoryPath = Path(__file__).resolve().parent.parent
 
     class Config:
