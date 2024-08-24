@@ -14,6 +14,9 @@ class AuthService:
         """Проверяет, может ли сервис присылать запросы в приложение."""
         return bool(service_name in self.external_services)
 
+    def get_user_id(self, token) -> str:
+        return 'ddd'
+
     def is_user_token_valid(self, token) -> bool:
         """Проверка валидности токена пользователя во внешнем сервисе аутентификации."""
         # try:
