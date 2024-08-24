@@ -6,8 +6,14 @@ authors = ["Носов Сергей Олегович <SONosov@datafort.ru>"]
 readme = "README.md"
 package-mode = false
 
+
+[build-system]
+requires = ["poetry-core"]
+build-backend = "poetry.core.masonry.api"
+
+
 [tool.poetry.dependencies]
-python = "^3.11"
+python = "~3.11.9"
 fastapi = "^0.112.1"
 unicorn = "^2.0.1.post1"
 gunicorn = "^23.0.0"
@@ -34,6 +40,24 @@ flake8-pyproject = "^1.2.3"
 bandit = "^1.7.9"
 mypy = "^1.11.1"
 
-[build-system]
-requires = ["poetry-core"]
-build-backend = "poetry.core.masonry.api"
+
+[tool.isort]
+profile = 'black'
+
+
+[tool.black]
+line-length = 120
+skip-string-normalization = true
+
+
+[tool.flake8]
+exclude = [".git", "__pycache__", ".venv"]
+max-line-length = 120
+
+
+[tool.mypy]
+python_version = "3.11"
+ignore_missing_imports = true
+plugins = [
+    "pydantic.mypy"
+]
