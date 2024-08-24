@@ -1,3 +1,4 @@
+from aiokafka import AIOKafkaProducer
 from pydantic import ValidationError
 
 from app.fastapi_app.constants import METRIC_MAPPING
@@ -8,14 +9,12 @@ from app.fastapi_app.schemas.services.metric_schemas import (
     TransferMetricSchema,
 )
 from app.fastapi_app.services.auth.auth_service import AuthService
-from app.fastapi_app.services.repositories.kafka.producers import KafkaProducer
 from app.fastapi_app.settings.logs import logger
 
 
 class MetricService:
     def __init__(self):
         self.auth_service = AuthService()
-        self.kafka_producer = KafkaProducer()
         self.metric_mapping = METRIC_MAPPING
 
     def _get_prepared_metric(self, data: TransferMetricSchema) -> BaseMetricSchema | None:
@@ -30,7 +29,7 @@ class MetricService:
         )
         return None
 
-    def save_metric(self, data: MetricsSchemaIn) -> None:
+    async def save_metric(self, data: MetricsSchemaIn, producer: AIOKafkaProducer) -> None:
         if not self.auth_service.is_user_token_valid(data.user_token):
             logger.error(f'Пользователь с токеном {data.user_token} не найден. Данные не сохранены: {data.metric_data}')
             return
@@ -46,5 +45,9 @@ class MetricService:
                 data=data.metric_data,
             )
         ):
-            self.kafka_producer.save_metric(metric)
-            logger.info(f'Данные отправлены в сервис Кафки для сохранения {metric}.')
+            await producer.send(
+                topic=metric.metric_name,
+                value=metric.json().encode(),
+                key=f"{user_id}".encode(),
+            )
+            logger.info('Данные успешно отправлены в Кафку.')
