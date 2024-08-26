@@ -30,8 +30,8 @@ app = FastAPI(
     description=settings.APP_DESCRIPTION,
     version="1.0.0",
     debug=settings.DEBUG,
-    # docs_url='/',
-    # lifespan=lifespan,
+    docs_url='/',
+    lifespan=lifespan,
 )
 app.include_router(api_router)
 
