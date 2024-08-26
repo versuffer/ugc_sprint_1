@@ -5,6 +5,8 @@ services:
     image: bitnami/kafka:3.4
     ports:
       - "9094:9094"
+    networks:
+      - ugc_network
     environment:
       - KAFKA_ENABLE_KRAFT=yes
       - KAFKA_CFG_PROCESS_ROLES=broker,controller
@@ -20,11 +22,12 @@ services:
     volumes:
       - kafka_0_data:/bitnami/kafka
 
-
   kafka-1:
     image: bitnami/kafka:3.4
     ports:
       - "9095:9095"
+    networks:
+      - ugc_network
     environment:
       - KAFKA_ENABLE_KRAFT=yes
       - ALLOW_PLAINTEXT_LISTENER=yes
@@ -44,6 +47,8 @@ services:
     image: bitnami/kafka:3.4
     ports:
       - "9096:9096"
+    networks:
+      - ugc_network
     environment:
       - KAFKA_ENABLE_KRAFT=yes
       - ALLOW_PLAINTEXT_LISTENER=yes
@@ -62,6 +67,8 @@ services:
     image: provectuslabs/kafka-ui:v0.7.0
     ports:
       - "8080:8080"
+    networks:
+      - ugc_network
     environment:
       - KAFKA_CLUSTERS_0_BOOTSTRAP_SERVERS=kafka-0:9092
       - KAFKA_CLUSTERS_0_NAME=kraft
@@ -74,9 +81,10 @@ services:
       - ".env"
     environment:
       KAFKA_HOST: kafka-2
-      KAFKA_PORT: 9096
     ports:
       - "8000:8000"
+    networks:
+      - ugc_network
     depends_on:
       - kafka-2
 
@@ -84,3 +92,7 @@ volumes:
   kafka_0_data:
   kafka_1_data:
   kafka_2_data:
+
+networks:
+  ugc_network:
+    driver: bridge
