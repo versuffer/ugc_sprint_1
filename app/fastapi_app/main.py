@@ -6,9 +6,9 @@ from aiokafka import AIOKafkaProducer
 from fastapi import FastAPI
 
 from app.fastapi_app.api.api_router import api_router
-from app.fastapi_app.services import kafka_producer
 from app.fastapi_app.settings.config import settings
 from app.fastapi_app.settings.logs import logger
+from app.kafka.producers import kafka_producer
 
 app = FastAPI(title=settings.APP_TITLE, description=settings.APP_DESCRIPTION, version="1", debug=settings.DEBUG)
 

@@ -1,3 +1,5 @@
+from fastapi import HTTPException, status
+
 from app.fastapi_app.constants import DEFAULT_ERROR_MESSAGE
 
 
@@ -16,3 +18,6 @@ class ExternalAuthServiceError(BaseError):
 
 class JWTError(BaseError):
     pass
+
+
+auth_error = HTTPException(status_code=status.HTTP_401_UNAUTHORIZED, detail='Unauthorized')

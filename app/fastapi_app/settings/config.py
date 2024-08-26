@@ -15,9 +15,11 @@ class Settings(BaseSettings):
     DEBUG: bool
     LOG_LEVEL: Literal['DEBUG', 'INFO', 'WARNING', 'ERROR'] = 'INFO'
     SQL_LOGS: bool = False
-    CHECK_TOKEN_URL: str
+    VERIFY_TOKEN_: str
+    AUTH_SERVICE_URL: str
+    AUTH_SERVICE_API: dict = {'verify_token': '/api/v1/auth/verify/access_token'}
     SERVICES: list[str]
-    USER_ID_FIELD: str
+    USER_ID_FIELD: str = 'login'
     KAFKA_HOST: str
     KAFKA_PORT: str
     ROOT_DIR: DirectoryPath = Path(__file__).resolve().parent.parent
