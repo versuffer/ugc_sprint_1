@@ -38,5 +38,4 @@ app.include_router(api_router)
 
 if __name__ == "__main__":
     logger.info(f"Start server. Settings: \n{pformat(settings.dict())}")
-
     uvicorn.run("main:app", host="localhost", port=8000, log_level=logging.DEBUG)
