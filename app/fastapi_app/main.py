@@ -13,7 +13,7 @@ from app.kafka.producers import kafka_producer
 app = FastAPI(title=settings.APP_TITLE, description=settings.APP_DESCRIPTION, version="1", debug=settings.DEBUG)
 
 
-app.include_router(api_router, prefix=settings.API_V1_STR)
+app.include_router(api_router)
 
 
 @app.on_event("startup")

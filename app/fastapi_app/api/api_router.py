@@ -1,6 +1,6 @@
 from fastapi import APIRouter
 
-from app.fastapi_app.api.v1 import v1_router
+from app.fastapi_app.api.v1.v1_router import v1_router
 
-api_router = APIRouter()
-api_router.include_router(v1_router.v1_router, tags=['Ручка для метрик пользователя'])
+api_router = APIRouter(prefix='/api')
+api_router.include_router(v1_router)

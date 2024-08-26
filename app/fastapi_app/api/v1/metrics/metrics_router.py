@@ -8,10 +8,10 @@ from app.fastapi_app.services.metrics.metric_service import MetricService
 from app.fastapi_app.settings.logs import logger
 from app.kafka.producers.kafka_producer import get_producer
 
-metrics_router = APIRouter()
+metrics_router = APIRouter(prefix='/metrics')
 
 
-@metrics_router.post("/metrics", status_code=status.HTTP_202_ACCEPTED)
+@metrics_router.post('', status_code=status.HTTP_202_ACCEPTED)
 async def save_metrics(
     metric_info: MetricsSchemaIn,
     background_tasks: BackgroundTasks,

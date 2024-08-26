@@ -15,7 +15,6 @@ class Settings(BaseSettings):
     DEBUG: bool
     LOG_LEVEL: Literal['DEBUG', 'INFO', 'WARNING', 'ERROR'] = 'INFO'
     SQL_LOGS: bool = False
-    VERIFY_TOKEN_: str
     AUTH_SERVICE_URL: str
     AUTH_SERVICE_API: dict = {'verify_token': '/api/v1/auth/verify/access_token'}
     SERVICES: list[str]
