@@ -17,37 +17,38 @@ class MetricService:
         self.auth_service = AuthService()
         self.metric_mapping = METRIC_MAPPING
 
-    def _get_prepared_metric(self, data: TransferMetricSchema) -> BaseMetricSchema | None:
-        if schema := self.metric_mapping.get(data.metric_name):
+    def _get_parsed_metric(self, metric_schema: TransferMetricSchema) -> BaseMetricSchema | None:
+        if parsing_schema := self.metric_mapping.get(metric_schema.metric_name):
             try:
-                return schema(**data.get_dict())
+                return parsing_schema(**metric_schema.get_dict())
             except ValidationError as error:
-                logger.error(f'Ошибка валидации метрики {data.metric_name}: {error}. ' f'Данные не сохранены: {data}.')
+                logger.error(
+                    f'Ошибка валидации метрики {metric_schema.metric_name}: {error}. '
+                    f'Данные не сохранены: {metric_schema}.'
+                )
                 return None
-        logger.warning(
-            f'Попытка сохранить неизвестный тип метрики: {data.metric_name}. ' f'Данные не сохранены: {data}.'
+        logger.error(
+            f'Попытка сохранить неизвестный тип метрики: {metric_schema.metric_name}. '
+            f'Данные не сохранены: {metric_schema}.'
         )
         return None
 
-    async def save_metric(self, data: MetricsSchemaIn, producer: AIOKafkaProducer) -> None:
-        if not self.auth_service.is_user_token_valid(data.user_token):
-            logger.error(f'Пользователь с токеном {data.user_token} не найден. Данные не сохранены: {data.metric_data}')
-            return
+    async def send_metric(self, metric_info: MetricsSchemaIn, user_token: str, producer: AIOKafkaProducer) -> None:
         try:
-            user_id = self.auth_service.get_user_id(data.user_token)
+            user_id = self.auth_service.get_user_id(user_token)
         except JWTError as error:
-            logger.error(f'Ошибка идентификации пользователя: {error}. Данные не сохранены: {data.metric_data}')
+            logger.error(f'Ошибка идентификации пользователя: {error}. Данные не сохранены: {metric_info.metric_data}')
             return
-        if metric := self._get_prepared_metric(
+        if metric := self._get_parsed_metric(
             TransferMetricSchema(
                 user_id=user_id,
-                metric_name=data.metric_name,
-                data=data.metric_data,
+                metric_name=metric_info.metric_name,
+                data=metric_info.metric_data,
             )
         ):
             await producer.send(
                 topic=metric.metric_name,
-                value=metric.json().encode(),
-                key=f"{user_id}".encode(),
+                value=metric.model_dump_json().encode(),
+                key=f'{user_id}'.encode(),
             )
             logger.info('Данные успешно отправлены в Кафку.')
