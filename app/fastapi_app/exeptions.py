@@ -12,7 +12,7 @@ class BaseError(Exception):
         return f"{self.__class__.__name__}(message={self.message}, args={self.args})"
 
 
-class ExternalAuthServiceError(BaseError):
+class AuthServiceError(BaseError):
     pass
 
 

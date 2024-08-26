@@ -1,4 +1,5 @@
 import logging
+from contextlib import asynccontextmanager
 from pprint import pformat
 
 import uvicorn
@@ -10,23 +11,29 @@ from app.fastapi_app.settings.config import settings
 from app.fastapi_app.settings.logs import logger
 from app.kafka.producers import kafka_producer
 
-app = FastAPI(title=settings.APP_TITLE, description=settings.APP_DESCRIPTION, version="1", debug=settings.DEBUG)
+
+@asynccontextmanager
+async def lifespan(app: FastAPI):
+    try:
+        kafka_producer.aio_producer = AIOKafkaProducer(
+            **{'bootstrap_servers': '{}:{}'.format(settings.KAFKA_HOST, settings.KAFKA_PORT)}
+        )
+        await kafka_producer.aio_producer.start()  # type: ignore
+        yield
+    finally:
+        await kafka_producer.aio_producer.stop()  # type: ignore
+        logger.info('Application stopped.')
 
 
+app = FastAPI(
+    title=settings.APP_TITLE,
+    description=settings.APP_DESCRIPTION,
+    version="1.0.0",
+    debug=settings.DEBUG,
+    # docs_url='/',
+    # lifespan=lifespan,
+)
 app.include_router(api_router)
-
-
-@app.on_event("startup")
-async def startup():
-    kafka_producer.aio_producer = AIOKafkaProducer(
-        **{'bootstrap_servers': '{}:{}'.format(settings.KAFKA_HOST, settings.KAFKA_PORT)}
-    )
-    await kafka_producer.aio_producer.start()
-
-
-@app.on_event("shutdown")
-async def shutdown():
-    await kafka_producer.aio_producer.stop()
 
 
 if __name__ == "__main__":

@@ -1,8 +1,9 @@
 import jwt
 from fastapi import Request, status
+from httpx import HTTPStatusError
 from jwt import InvalidTokenError
 
-from app.fastapi_app.exeptions import JWTError, auth_error
+from app.fastapi_app.exeptions import AuthServiceError, JWTError, auth_error
 from app.fastapi_app.services.base import AsyncRequestService
 from app.fastapi_app.settings.config import settings
 
@@ -30,9 +31,12 @@ class AuthService:
 
     async def verify_user_token(self, token: str) -> None:
         """Проверка валидности токена пользователя во внешнем сервисе аутентификации."""
-        response = await self.request_service.request(
-            url=self.verify_token_url, method='POST', headers={'Authorization': token}
-        )
+        try:
+            response = await self.request_service.request(
+                url=self.verify_token_url, method='POST', headers={'Authorization': f'Bearer {token}'}
+            )
+        except HTTPStatusError as err:
+            raise AuthServiceError from err
         if not (
             response.status_code == status.HTTP_200_OK and response.json() == {'detail': 'Successful verification'}
         ):
