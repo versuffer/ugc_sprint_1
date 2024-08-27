@@ -82,17 +82,34 @@ services:
     environment:
       KAFKA_HOST: kafka-0
       KAFKA_PORT: 9092
-    ports:
-      - "8000:8000"
     networks:
       - ugc_network
+    restart: always
     depends_on:
       - kafka-2
+
+  nginx:
+    container_name: nginx
+    image: nginx:latest
+    ports:
+      - "8000:8000"
+    volumes:
+      - ./nginx/nginx.conf:/etc/nginx/nginx.conf
+      - ./nginx/fastapi_app.conf:/etc/nginx/conf.d/fastapi_app.conf
+      - nginx_static:/var/html/static/
+      - nginx_media:/var/html/media/
+    networks:
+      - ugc_network
+    restart: always
+    depends_on:
+      - fastapi_app
 
 volumes:
   kafka_0_data:
   kafka_1_data:
   kafka_2_data:
+  nginx_static:
+  nginx_media:
 
 networks:
   ugc_network:
