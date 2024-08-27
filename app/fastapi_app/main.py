@@ -15,9 +15,8 @@ from app.kafka.producers import kafka_producer
 @asynccontextmanager
 async def lifespan(app: FastAPI):
     try:
-        kafka_producer.aio_producer = AIOKafkaProducer(
-            **{'bootstrap_servers': '{}:{}'.format(settings.KAFKA_HOST, settings.KAFKA_PORT)}
-        )
+        bootstrap = {'bootstrap_servers': '{}:{}'.format(settings.KAFKA_HOST, settings.KAFKA_PORT)}
+        kafka_producer.aio_producer = AIOKafkaProducer(**bootstrap)
         await kafka_producer.aio_producer.start()  # type: ignore
         yield
     finally:
@@ -28,7 +27,7 @@ async def lifespan(app: FastAPI):
 app = FastAPI(
     title=settings.APP_TITLE,
     description=settings.APP_DESCRIPTION,
-    version="1.0.0",
+    version='1.0.0',
     debug=settings.DEBUG,
     docs_url='/',
     lifespan=lifespan,
@@ -38,5 +37,4 @@ app.include_router(api_router)
 
 if __name__ == "__main__":
     logger.info(f"Start server. Settings: \n{pformat(settings.dict())}")
-
     uvicorn.run("main:app", host="localhost", port=8000, log_level=logging.DEBUG)
