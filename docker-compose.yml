@@ -80,7 +80,8 @@ services:
     env_file:
       - ".env"
     environment:
-      KAFKA_HOST: kafka-2
+      KAFKA_HOST: kafka-0
+      KAFKA_PORT: 9092
     ports:
       - "8000:8000"
     networks:
