@@ -77,6 +77,24 @@ services:
       - KAFKA_CLUSTERS_0_BOOTSTRAP_SERVERS=kafka-0:9092
       - KAFKA_CLUSTERS_0_NAME=kraft
 
+  clickhouse:
+    image: clickhouse/clickhouse-server:24.7
+    container_name: clickhouse
+    ports:
+      - "8123:8123"
+      - "9000:9000"
+    networks:
+      - ugc_network
+    env_file:
+      - ".env"
+    environment:
+      CLICKHOUSE_USER: ${CLICKHOUSE_USER}
+#      CLICKHOUSE_ADMIN_USER: admin
+      CLICKHOUSE_PASSWORD: ${CLICKHOUSE_PASSWORD}
+#      CLICKHOUSE_ADMIN_PASSWORD: password
+    volumes:
+      - clickhouse_data:/var/lib/clickhouse
+
   fastapi_app:
     container_name: fastapi_app
     build:
@@ -95,13 +113,13 @@ services:
     image: nginx:latest
     ports:
       - "8000:8000"
+    networks:
+      - ugc_network
     volumes:
       - ./nginx/nginx.conf:/etc/nginx/nginx.conf
       - ./nginx/fastapi_app.conf:/etc/nginx/conf.d/fastapi_app.conf
       - nginx_static:/var/html/static/
       - nginx_media:/var/html/media/
-    networks:
-      - ugc_network
     restart: always
     depends_on:
       - fastapi_app
@@ -110,6 +128,7 @@ volumes:
   kafka_0_data:
   kafka_1_data:
   kafka_2_data:
+  clickhouse_data:
   nginx_static:
   nginx_media:
 
